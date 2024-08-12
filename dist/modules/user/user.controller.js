@@ -38,7 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserById = exports.updateUserById = exports.getUserById = exports.getAllUsers = exports.createUser = void 0;
 const userService = __importStar(require("./user.service"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-const quiryBuilder_1 = __importDefault(require("../../builder/quiryBuilder"));
+const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const user_model_1 = require("./user.model");
 // Create a new user
@@ -53,7 +53,7 @@ exports.createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(voi
 }));
 // Get all users
 exports.getAllUsers = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryBuilder = new quiryBuilder_1.default(user_model_1.User.find(), req.query)
+    const queryBuilder = new queryBuilder_1.default(user_model_1.User.find(), req.query)
         .search(['username', 'email', 'firstName', 'lastName'])
         .filter()
         .sort()

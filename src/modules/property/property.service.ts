@@ -1,4 +1,4 @@
-import QueryBuilder from "../../builder/quiryBuilder";
+import QueryBuilder from "../../builder/queryBuilder";
 import { PropertyModel } from "./property.model";
 import { TProperty } from "./property.validation";
 
@@ -15,10 +15,10 @@ export const getAllPropertiesService = async (query: Record<string, unknown>) =>
         .sort()
         .paginate()
         .fields();
-    
+
     const properties = await queryBuilder.modelQuery;
     const meta = await queryBuilder.countTotal();
-    
+
     return { properties, meta };
 };
 

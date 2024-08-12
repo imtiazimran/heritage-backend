@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deletePropertyService = exports.updatePropertyService = exports.getPropertyByIdService = exports.getAllPropertiesService = exports.createPropertyService = void 0;
-const quiryBuilder_1 = __importDefault(require("../../builder/quiryBuilder"));
+const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
 const property_model_1 = require("./property.model");
 const createPropertyService = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const newProperty = new property_model_1.PropertyModel(data);
@@ -21,7 +21,7 @@ const createPropertyService = (data) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createPropertyService = createPropertyService;
 const getAllPropertiesService = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const queryBuilder = new quiryBuilder_1.default(property_model_1.PropertyModel.find(), query)
+    const queryBuilder = new queryBuilder_1.default(property_model_1.PropertyModel.find(), query)
         .search(['name', 'location'])
         .filter()
         .sort()

@@ -8,7 +8,7 @@ import globalErrorHandler from "./middlewares/errorHandler";
 // routes
 import userRoute from './modules/user/user.route'
 import propertyRoute from './modules/property/property.route'
-
+import bidRoute from './modules/bid/bid.route'
 app.use(
     cors(
         //     {
@@ -29,7 +29,7 @@ app.use(bodyParser.json());
 
 app.use('/api/v1/users',userRoute )
 app.use('/api/v1/property',propertyRoute )
-
+app.use('/api/v1/bids',bidRoute )
 
 app.get('/', (req, res) => {
     res.send('heritage-server is running...')

@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as userService from './user.service';
 import { TUser } from './user.validation';
 import catchAsync from '../../utils/catchAsync';
-import QueryBuilder from '../../builder/quiryBuilder';
+import QueryBuilder from '../../builder/queryBuilder';
 import sendResponse from '../../utils/sendResponse';
 import { User } from './user.model';
 
