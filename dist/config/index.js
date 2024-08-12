@@ -8,5 +8,6 @@ const path_1 = __importDefault(require("path"));
 dotenv_1.default.config({ path: path_1.default.join((process.cwd(), '.env')) });
 exports.default = {
     port: process.env.PORT,
-    DB: process.env.dburl
+    DB: process.env.dburl,
+    NODE_ENV: process.env.NODE_ENV
 };

@@ -6,6 +6,7 @@ import cors  from 'cors'
 
 // routes
 import userRoute from './modules/user/user.route'
+import globalErrorHandler from "./middlewares/errorHandler";
 
 
 app.use(
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
     res.send('heritage-server is running...')
 })
 
+app.use(globalErrorHandler)
 
 app.all("*", (req: Request, res: Response) => {
     res.status(404).json({
