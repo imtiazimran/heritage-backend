@@ -38,24 +38,54 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserById = exports.updateUserById = exports.getUserById = exports.getAllUsers = exports.createUser = void 0;
 const userService = __importStar(require("./user.service"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const quiryBuilder_1 = __importDefault(require("../../builder/quiryBuilder"));
+const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const user_model_1 = require("./user.model");
 // Create a new user
 exports.createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userService.createUserIntoDB(req.body);
-    res.status(201).json(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 201,
+        success: true,
+        message: 'User created successfully',
+        data: user,
+    });
 }));
 // Get all users
 exports.getAllUsers = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield userService.getAllUsersFromDB();
-    res.status(200).json(users);
+    const queryBuilder = new quiryBuilder_1.default(user_model_1.User.find(), req.query)
+        .search(['username', 'email', 'firstName', 'lastName'])
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+    const users = yield queryBuilder.modelQuery;
+    const meta = yield queryBuilder.countTotal();
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Users fetched successfully',
+        data: users,
+        meta: meta, // Pagination metadata
+    });
 }));
 // Get a single user by ID
 exports.getUserById = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield userService.getUserByIdFromDB(req.params.id);
+    const user = yield user_model_1.User.findById(req.params.id);
     if (!user) {
-        res.status(404).json({ error: 'User not found' });
-        return;
+        return (0, sendResponse_1.default)(res, {
+            statusCode: 404,
+            success: false,
+            message: 'User not found',
+            data: null,
+        });
     }
-    res.status(200).json(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'User fetched successfully',
+        data: user,
+    });
 }));
 // Update a user by ID
 exports.updateUserById = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,7 +94,12 @@ exports.updateUserById = (0, catchAsync_1.default)((req, res, next) => __awaiter
         res.status(404).json({ error: 'User not found' });
         return;
     }
-    res.status(200).json(user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 201,
+        success: true,
+        message: 'User updated successfully',
+        data: user,
+    });
 }));
 // Delete a user by ID
 exports.deleteUserById = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -73,5 +108,8 @@ exports.deleteUserById = (0, catchAsync_1.default)((req, res, next) => __awaiter
         res.status(404).json({ error: 'User not found' });
         return;
     }
-    res.status(200).json({ message: 'User deleted successfully' });
+    res.status(200).json({
+        success: true,
+        message: 'User deleted successfully'
+    });
 }));

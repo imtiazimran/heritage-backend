@@ -2,12 +2,12 @@ import express, { Application, Request, Response } from "express";
 import bodyParser from "body-parser";
 const app: Application = express()
 import cors  from 'cors'
+import globalErrorHandler from "./middlewares/errorHandler";
 
 
 // routes
 import userRoute from './modules/user/user.route'
-import globalErrorHandler from "./middlewares/errorHandler";
-
+import propertyRoute from './modules/property/property.route'
 
 app.use(
     cors(
@@ -27,7 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 
-app.use('/api/v1',userRoute )
+app.use('/api/v1/users',userRoute )
+app.use('/api/v1/property',propertyRoute )
 
 
 app.get('/', (req, res) => {
