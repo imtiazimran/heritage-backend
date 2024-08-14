@@ -15,7 +15,7 @@ app.use(
             {
             origin: [
                 'http://localhost:5173',
-                'https://heritage-backend.vercel.app'
+                'https://heritage-frontend.vercel.app'
             ],
             methods: "GET,POST,PUT,PATCH,DELETE",
             credentials: true,
