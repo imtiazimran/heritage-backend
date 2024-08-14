@@ -6,12 +6,13 @@ import catchAsync from '../../utils/catchAsync';
 import QueryBuilder from '../../builder/queryBuilder';
 import sendResponse from '../../utils/sendResponse';
 import { User } from './user.model';
-import generateToken from '../../utils/jwt';
 import bcrypt from 'bcryptjs';
+import { generateTokens } from '../../utils/jwt';
+
 // Create a new user
 export const registerUser = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const user = await userService.createUserIntoDB(req.body as TUser);
-    const token = generateToken(String(user?._id));
+    const token = generateTokens(String(user?._id));
 
     sendResponse(res, {
         statusCode: 201,
@@ -21,11 +22,11 @@ export const registerUser = catchAsync(async (req: Request, res: Response, next:
     });
 });
 
-// In your login controller
+// login
 export const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
+    console.log(user, email, password);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
         return sendResponse(res, {
@@ -36,14 +37,13 @@ export const loginUser = catchAsync(async (req: Request, res: Response, next: Ne
         });
     }
 
-    const token = generateToken(String(user?._id));
-    user.password = "";  // Ensure password is not sent back
-
+    const token = generateTokens(String(user?._id));
+    user.password = "";  
     sendResponse(res, {
         statusCode: 200,
         success: true,
         message: 'User logged in successfully',
-        data: { user, token },
+        data: { token, user },
     });
 });
 
@@ -71,7 +71,8 @@ export const getAllUsers = catchAsync(async (req: Request, res: Response, next: 
 
 // Get a single user by ID
 export const getUserById = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const user = await User.findById(req.params.id);
+    console.log(req.user?._id);
+    const user = await User.findById(req.user?._id);
     if (!user) {
         return sendResponse(res, {
             statusCode: 404,

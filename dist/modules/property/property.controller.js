@@ -24,6 +24,7 @@ exports.createProperty = (0, catchAsync_1.default)((req, res) => __awaiter(void 
 // Get all properties
 exports.getAllProperties = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { properties, meta } = yield (0, property_service_1.getAllPropertiesService)(req.query);
+    console.log(properties.length, req.query);
     (0, sendResponse_1.default)(res, { statusCode: 200, success: true, data: properties, meta });
 }));
 // Get a single property by ID

@@ -40,6 +40,6 @@ exports.protect = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0
             data: null,
         });
     }
-    req.user = user; // Type assertion here
+    req.user = user;
     next();
 }));

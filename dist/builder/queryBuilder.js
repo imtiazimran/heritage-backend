@@ -31,7 +31,16 @@ class QueryBuilder {
         // Filtering
         const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
         excludeFields.forEach((el) => delete queryObj[el]);
-        this.modelQuery = this.modelQuery.find(queryObj);
+        // Handle range queries for numeric fields (e.g., price)
+        const numericFilters = {};
+        Object.keys(queryObj).forEach((key) => {
+            var _a;
+            if (typeof queryObj[key] === 'string' && ((_a = queryObj[key]) === null || _a === void 0 ? void 0 : _a.includes('-'))) {
+                const [min, max] = queryObj[key].split('-').map(Number);
+                numericFilters[key] = Object.assign(Object.assign({}, (min !== undefined && { $gte: min })), (max !== undefined && { $lte: max }));
+            }
+        });
+        this.modelQuery = this.modelQuery.find(Object.assign(Object.assign({}, queryObj), numericFilters));
         return this;
     }
     sort() {

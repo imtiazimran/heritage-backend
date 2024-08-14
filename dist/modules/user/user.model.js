@@ -53,6 +53,10 @@ userSchema.post('save', function (doc, next) {
     doc.password = "";
     next();
 });
+// userSchema.post('findOne', function ( doc, next) {
+//     doc.password = "";
+//     next();
+// })
 // Virtual property to get full name
 userSchema.virtual('fullName').get(function () {
     return `${this.firstName || ''} ${this.lastName || ''}`.trim();

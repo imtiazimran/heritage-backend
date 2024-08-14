@@ -21,12 +21,16 @@ const createPropertyService = (data) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createPropertyService = createPropertyService;
 const getAllPropertiesService = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get all fields from the PropertyModel schema
+    const allFields = Object.keys(property_model_1.PropertyModel.schema.paths);
+    // Initialize QueryBuilder with the main query
     const queryBuilder = new queryBuilder_1.default(property_model_1.PropertyModel.find(), query)
-        .search(['name', 'location'])
+        .search(allFields) // Search across all fields
         .filter()
         .sort()
         .paginate()
         .fields();
+    // Execute the query and get results
     const properties = yield queryBuilder.modelQuery;
     const meta = yield queryBuilder.countTotal();
     return { properties, meta };

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { 
-    createPropertyService, 
-    getAllPropertiesService, 
-    getPropertyByIdService, 
-    updatePropertyService, 
-    deletePropertyService 
+import {
+    createPropertyService,
+    getAllPropertiesService,
+    getPropertyByIdService,
+    updatePropertyService,
+    deletePropertyService
 } from './property.service';
 import { z } from 'zod';
 import sendResponse from '../../utils/sendResponse';
@@ -19,6 +19,7 @@ export const createProperty = catchAsync(async (req: Request, res: Response) => 
 // Get all properties
 export const getAllProperties = catchAsync(async (req: Request, res: Response) => {
     const { properties, meta } = await getAllPropertiesService(req.query);
+    console.log( properties.length, req.query);
     sendResponse(res, { statusCode: 200, success: true, data: properties, meta });
 });
 

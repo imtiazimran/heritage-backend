@@ -33,6 +33,6 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
         });
     }
 
-    req.user = user;  // Type assertion here
+    req.user = user; 
     next();
 });

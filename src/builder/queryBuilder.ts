@@ -1,4 +1,4 @@
-import { FilterQuery, Query } from 'mongoose';
+import { FilterQuery, Query } from "mongoose";
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -33,7 +33,22 @@ class QueryBuilder<T> {
 
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+    // Handle range queries for numeric fields (e.g., price)
+    const numericFilters: Record<string, { $gte?: number, $lte?: number }> = {};
+    Object.keys(queryObj).forEach((key) => {
+      if (typeof queryObj[key] === 'string' && queryObj[key]?.includes('-')) {
+        const [min, max] = (queryObj[key] as string).split('-').map(Number);
+        numericFilters[key] = {
+          ...(min !== undefined && { $gte: min }),
+          ...(max !== undefined && { $lte: max }),
+        };
+      }
+    });
+
+    this.modelQuery = this.modelQuery.find({
+      ...queryObj,
+      ...numericFilters,
+    } as FilterQuery<T>);
 
     return this;
   }
@@ -63,6 +78,7 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.select(fields);
     return this;
   }
+
   async countTotal() {
     const totalQueries = this.modelQuery.getFilter();
     const total = await this.modelQuery.model.countDocuments(totalQueries);
