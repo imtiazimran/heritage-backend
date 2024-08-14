@@ -35,20 +35,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserById = exports.updateUserById = exports.getUserById = exports.getAllUsers = exports.createUser = void 0;
+exports.deleteUserById = exports.updateUserById = exports.getUserById = exports.getAllUsers = exports.loginUser = exports.registerUser = void 0;
 const userService = __importStar(require("./user.service"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const user_model_1 = require("./user.model");
+const jwt_1 = __importDefault(require("../../utils/jwt"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 // Create a new user
-exports.createUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.registerUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield userService.createUserIntoDB(req.body);
+    const token = (0, jwt_1.default)(String(user === null || user === void 0 ? void 0 : user._id));
     (0, sendResponse_1.default)(res, {
         statusCode: 201,
         success: true,
-        message: 'User created successfully',
-        data: user,
+        message: 'User registered successfully',
+        data: { user, token },
+    });
+}));
+// In your login controller
+exports.loginUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    const user = yield user_model_1.User.findOne({ email });
+    if (!user || !(yield bcryptjs_1.default.compare(password, user.password))) {
+        return (0, sendResponse_1.default)(res, {
+            statusCode: 401,
+            success: false,
+            message: 'Invalid email or password',
+            data: null,
+        });
+    }
+    const token = (0, jwt_1.default)(String(user === null || user === void 0 ? void 0 : user._id));
+    user.password = ""; // Ensure password is not sent back
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: 'User logged in successfully',
+        data: { user, token },
     });
 }));
 // Get all users

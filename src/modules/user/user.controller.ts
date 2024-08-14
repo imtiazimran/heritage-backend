@@ -6,17 +6,47 @@ import catchAsync from '../../utils/catchAsync';
 import QueryBuilder from '../../builder/queryBuilder';
 import sendResponse from '../../utils/sendResponse';
 import { User } from './user.model';
-
+import generateToken from '../../utils/jwt';
+import bcrypt from 'bcryptjs';
 // Create a new user
-export const createUser = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const registerUser = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const user = await userService.createUserIntoDB(req.body as TUser);
+    const token = generateToken(String(user?._id));
+
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: 'User created successfully',
-        data: user,
+        message: 'User registered successfully',
+        data: { user, token },
     });
 });
+
+// In your login controller
+export const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+        return sendResponse(res, {
+            statusCode: 401,
+            success: false,
+            message: 'Invalid email or password',
+            data: null,
+        });
+    }
+
+    const token = generateToken(String(user?._id));
+    user.password = "";  // Ensure password is not sent back
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'User logged in successfully',
+        data: { user, token },
+    });
+});
+
 
 // Get all users
 export const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

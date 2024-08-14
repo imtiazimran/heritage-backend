@@ -2,9 +2,9 @@ import { User } from "./user.model";
 import { TUser } from "./user.validation";
 
 // Create a new user
-export const createUserIntoDB = async (userData: TUser) => {
-    const data = new User(userData);
-    return await User.create(data);
+export const createUserIntoDB = async (userData: TUser): Promise<TUser> => {
+    const user = new User(userData);
+    return await user.save();
 };
 
 // Get all users

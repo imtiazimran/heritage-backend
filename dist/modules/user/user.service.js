@@ -13,8 +13,8 @@ exports.deleteUserByIdFromDB = exports.updateUserByIdIntoDB = exports.getUserByI
 const user_model_1 = require("./user.model");
 // Create a new user
 const createUserIntoDB = (userData) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = new user_model_1.User(userData);
-    return yield user_model_1.User.create(data);
+    const user = new user_model_1.User(userData);
+    return yield user.save();
 });
 exports.createUserIntoDB = createUserIntoDB;
 // Get all users

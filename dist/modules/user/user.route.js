@@ -8,7 +8,8 @@ const handleValidation_1 = __importDefault(require("../../middlewares/handleVali
 const user_controller_1 = require("./user.controller");
 const user_validation_1 = require("./user.validation");
 const router = express_1.default.Router();
-router.post('/create', (0, handleValidation_1.default)(user_validation_1.userSchema), user_controller_1.createUser);
+router.post('/register', (0, handleValidation_1.default)(user_validation_1.userSchema), user_controller_1.registerUser);
+router.post('/login', user_controller_1.loginUser);
 router.get('/', user_controller_1.getAllUsers);
 router.get('/:id', user_controller_1.getUserById);
 router.put('/:id', (0, handleValidation_1.default)(user_validation_1.userSchema.partial()), user_controller_1.updateUserById);
