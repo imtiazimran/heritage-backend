@@ -9,7 +9,7 @@ import { bidSchema } from './bid.validation';
 const router = Router();
 
 // Routes
-router.post('/create', validateRequest(bidSchema), placeBid);
+router.post('/create', placeBid);
 router.get('/properties/:propertyId', getBidsForProperty);
 router.get('/:id', getBidById);
 router.delete('/:id', deleteBid);

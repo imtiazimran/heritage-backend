@@ -19,10 +19,10 @@ const catchAsync_1 = __importDefault(require("../utils/catchAsync"));
 const sendResponse_1 = __importDefault(require("../utils/sendResponse"));
 const generateTokens = (userId) => {
     const accessToken = jsonwebtoken_1.default.sign({ id: userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN || '15m', // e.g., 15 minutes
+        expiresIn: process.env.JWT_EXPIRES_IN || '15m',
     });
     const refreshToken = jsonwebtoken_1.default.sign({ id: userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d', // e.g., 7 days
+        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '30d',
     });
     return { accessToken, refreshToken };
 };
@@ -50,11 +50,18 @@ exports.refreshToken = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
             });
         }
         const tokens = (0, exports.generateTokens)(user._id);
+        // Set the new refresh token in an HTTP-only cookie
+        res.cookie('refreshToken', tokens.refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'none',
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        });
         (0, sendResponse_1.default)(res, {
             statusCode: 200,
             success: true,
             message: "Tokens refreshed successfully",
-            data: tokens,
+            data: { accessToken: tokens.accessToken }, // Send only the access token in the response
         });
     }
     catch (err) {

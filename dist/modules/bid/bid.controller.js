@@ -19,8 +19,9 @@ const queryBuilder_1 = __importDefault(require("../../builder/queryBuilder"));
 const bid_model_1 = require("./bid.model");
 const placeBid = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const validatedBid = req.body;
-        const newBid = yield (0, bid_service_1.placeBidService)(validatedBid);
+        // const validatedBid = req.body;
+        console.log(req.body);
+        const newBid = yield (0, bid_service_1.placeBidService)(req.body);
         return (0, sendResponse_1.default)(res, {
             statusCode: 201,
             success: true,

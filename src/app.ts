@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 const app: Application = express()
 import cors  from 'cors'
 import globalErrorHandler from "./middlewares/errorHandler";
-
+import cookieParser from 'cookie-parser'
 
 // routes
 import userRoute from './modules/user/user.route'
@@ -14,8 +14,8 @@ app.use(
     cors(
             {
             origin: [
-                'http://localhost:5173',
-                'https://heritage-frontend.vercel.app'
+                'https://heritage-frontend.vercel.app',
+                'http://localhost:5173'
             ],
             methods: "GET,POST,PUT,PATCH,DELETE",
             credentials: true,
@@ -26,6 +26,7 @@ app.use(
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 
 app.use('/api/v1/users',userRoute )

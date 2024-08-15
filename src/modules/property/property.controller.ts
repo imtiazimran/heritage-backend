@@ -19,7 +19,6 @@ export const createProperty = catchAsync(async (req: Request, res: Response) => 
 // Get all properties
 export const getAllProperties = catchAsync(async (req: Request, res: Response) => {
     const { properties, meta } = await getAllPropertiesService(req.query);
-    console.log( properties.length, req.query);
     sendResponse(res, { statusCode: 200, success: true, data: properties, meta });
 });
 

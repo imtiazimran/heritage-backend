@@ -7,10 +7,10 @@ import { BidModel } from './bid.model';
 
 export const placeBid = async (req: Request, res: Response) => {
     try {
-        const validatedBid = req.body;
+        // const validatedBid = req.body;
 
-        const newBid = await placeBidService(validatedBid);
-
+        console.log(req.body);
+        const newBid = await placeBidService(req.body);
         return sendResponse(res, {
             statusCode: 201,
             success: true,
