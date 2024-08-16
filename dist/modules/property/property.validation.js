@@ -30,5 +30,7 @@ const propertySchema = zod_1.z.object({
     propertyType: zod_1.z.string().min(1, 'Property type is required'),
     bathrooms: zod_1.z.number().int().positive('Bathrooms must be a positive integer'),
     bedrooms: zod_1.z.number().int().positive('Bedrooms must be a positive integer'),
+    minBid: zod_1.z.number().nonnegative().optional(),
+    maxBid: zod_1.z.number().nonnegative().optional()
 });
 exports.propertySchema = propertySchema;

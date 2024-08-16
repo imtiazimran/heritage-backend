@@ -3,46 +3,38 @@ import { PropertyModel } from '../property/property.model';
 import { BidModel } from '../bid/bid.model';
 import { TBid } from './bid.validation';
 
-export const placeBidService = async (bidData: TBid) => {
-    // Validate bidData to ensure it's correctly formatted
-    if (!bidData.property || !bidData.amount || !bidData.bidder) {
-        throw new Error('Invalid bid data');
-    }
+export const createBid = async (bidData: TBid) => {
+    return await BidModel.create(bidData);
+};
 
-    // Check if property exists and get the current highest bid
-    const property = await PropertyModel.findById(bidData.property).exec();
-    if (!property) {
-        throw new Error('Property not found');
-    }
-
-    // Ensure currentBid is not undefined and compare with the new bid amount
-    const currentBid = property.currentBid ?? 0;
-
-    if (bidData.amount <= currentBid) {
-        throw new Error('Bid amount must be higher than the current bid');
-    }
-
-    // Create and save the new bid
-    const newBid = new BidModel(bidData);
-    await newBid.save();
-
-    // Update the property with the new highest bid
-    property.currentBid = bidData.amount;
-    property.highestBidder = bidData.bidder;
-    await property.save();
-
-    return newBid;
+// Update the property with the highest bid
+export const updateProperty = async (propertyId: string, bidAmount: number, bidderId: string) => {
+    return await PropertyModel.findByIdAndUpdate(
+        propertyId,
+        { currentBid: bidAmount, highestBidder: bidderId },
+        { new: true }
+    ).exec();
 };
 
 
-export const getBidsForPropertyService = async (propertyId: string) => {
-    return await BidModel.find({ property: propertyId }).populate('bidder', 'username').exec();
+
+export const getBidsForProperty = async (propertyId: string, queryBuilder: any) => {
+    const bids = await queryBuilder
+        .populate('bidder', 'username')
+        .populate('property', 'title')
+        .exec();
+    const total = await queryBuilder.countTotal();
+    return { bids, total };
 };
 
-export const getBidByIdService = async (bidId: string) => {
-    return await BidModel.findById(bidId).populate('bidder', 'username').exec();
+export const getBidById = async (bidId: string) => {
+    return await BidModel.findById(bidId)
+        .populate('bidder', 'username email contactNumber firstName lastName')
+        .populate('property', 'title location price')
+        .exec();
 };
 
-export const deleteBidService = async (bidId: string) => {
+// Delete a specific bid by its ID
+export const deleteBid = async (bidId: string) => {
     return await BidModel.findByIdAndDelete(bidId).exec();
 };

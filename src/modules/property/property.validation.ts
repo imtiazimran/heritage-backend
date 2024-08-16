@@ -25,6 +25,8 @@ const propertySchema = z.object({
     propertyType: z.string().min(1, 'Property type is required'),
     bathrooms: z.number().int().positive('Bathrooms must be a positive integer'),
     bedrooms: z.number().int().positive('Bedrooms must be a positive integer'),
+    minBid: z.number().nonnegative().optional(),
+    maxBid: z.number().nonnegative().optional()
 });
 
 
@@ -50,6 +52,8 @@ type TProperty = {
     propertyType: string;
     bathrooms: number;
     bedrooms: number;
+    minBid?: number;
+    maxBid?: number;
 };
 
 
